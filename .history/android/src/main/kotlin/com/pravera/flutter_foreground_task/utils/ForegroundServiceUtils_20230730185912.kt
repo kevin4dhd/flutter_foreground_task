@@ -10,10 +10,6 @@ import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.WindowManager
-
-import android.media.MediaPlayer
-import android.media.RingtoneManager
-
 /**
  * Utilities that can be used while the foreground service is running.
  *

@@ -10,10 +10,6 @@ import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.WindowManager
-
-import android.media.MediaPlayer
-import android.media.RingtoneManager
-
 /**
  * Utilities that can be used while the foreground service is running.
  *
@@ -102,14 +98,6 @@ class ForegroundServiceUtils {
 			val newWakeLock = powerManager.newWakeLock(serviceFlag, "ForegroundServiceUtils:WakeLock")
 			newWakeLock.acquire(1000)
 			newWakeLock.release()
-
-			val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-			val mediaPlayer = MediaPlayer().apply {
-				setDataSource(context, ringtoneUri)
-				prepare() // might take long for large files, hence call this in the background
-				start()
-			}
-
 		}
 
 		/**
