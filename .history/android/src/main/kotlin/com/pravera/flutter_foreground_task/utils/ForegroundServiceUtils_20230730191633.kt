@@ -11,11 +11,8 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.view.WindowManager
 
-import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
-import java.io.IOException
-import android.util.Log
+import android.media.RingtoneManager
 
 /**
  * Utilities that can be used while the foreground service is running.
@@ -101,35 +98,27 @@ class ForegroundServiceUtils {
 			val serviceFlag = PowerManager.SCREEN_BRIGHT_WAKE_LOCK
 					.or(PowerManager.ACQUIRE_CAUSES_WAKEUP)
 					.or(PowerManager.ON_AFTER_RELEASE)
-		
+
 			val newWakeLock = powerManager.newWakeLock(serviceFlag, "ForegroundServiceUtils:WakeLock")
 			newWakeLock.acquire(1000)
 			newWakeLock.release()
-		
-			val resourceId = context.resources.getIdentifier("alert_notificacion", "raw", context.packageName)
-			if (resourceId != 0) {
-				val audioAttributes = AudioAttributes.Builder()
-					.setUsage(AudioAttributes.USAGE_ALARM)
-					.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-					.build()
-		
-				// Obtiene el AudioManager y establece el volumen de la alarma al máximo
-				val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-				val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
-				audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0)
-		
-				val mediaPlayer = MediaPlayer().apply {
-					setAudioAttributes(audioAttributes)
-					val afd = context.resources.openRawResourceFd(resourceId)
-					setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-					setVolume(1f, 1f)
-					prepare()
-					start()
-				}
-			} else {
-				Log.d("wakeUpScreen", "No se encontró el recurso de audio.")
+
+			val alertSoundUri = Uri.parse("android.resource://${context.packageName}/raw/your_alert_sound")
+
+			val audioAttributes = AudioAttributes.Builder()
+				.setUsage(AudioAttributes.USAGE_ALARM) 
+				.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+				.build()
+
+			val mediaPlayer = MediaPlayer().apply {
+				setAudioAttributes(audioAttributes)
+				setDataSource(context, alertSoundUri)
+				setVolume(1f, 1f)
+				prepare()
+				start()
 			}
-		}		
+
+		}
 
 		/**
 		 * Returns whether the app has been excluded from battery optimization.
