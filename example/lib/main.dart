@@ -273,7 +273,9 @@ class _ExamplePageState extends State<ExamplePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buttonBuilder('start', onPressed: _startForegroundTask),
+          buttonBuilder('start', onPressed: () {
+            FlutterForegroundTask.wakeUpScreen();
+          }),
           buttonBuilder('stop', onPressed: _stopForegroundTask),
         ],
       ),
