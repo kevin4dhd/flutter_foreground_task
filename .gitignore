@@ -3,6 +3,7 @@
 .idea/
 .packages
 .pub/
+.history
 
 /pubspec.lock
 build/
